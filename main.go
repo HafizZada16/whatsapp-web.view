@@ -198,6 +198,18 @@ func main() {
 		},
 	}
 
+	// --- [START] OPTIMASI RAM & MEMORI ---
+	// Menyuntikkan argumen Chromium melalui Environment Variable sebelum inisialisasi.
+	os.Setenv("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+		"--disable-features=IsolateOrigins,site-per-process,AudioServiceOutOfProcess "+
+			"--renderer-process-limit=1 "+
+			"--js-flags=\"--max-old-space-size=256\" "+ // Turunkan lagi dari 512 ke 256
+			"--disable-gpu "+                           // [EKSTRIM] Mematikan GPU process sepenuhnya (Hemat ~100MB)
+			"--disable-dev-shm-usage "+                 // Mengurangi penggunaan memori shared
+			"--disable-background-networking "+         // Mematikan telemetri background
+			"--disable-extensions")                     // Memastikan tidak ada ekstensi ter-load
+	// --- [END] OPTIMASI RAM & MEMORI ---
+
 	w := webview2.NewWithOptions(opts)
 	if w == nil {
 		log.Fatalln("Gagal inisialisasi WebView2")
